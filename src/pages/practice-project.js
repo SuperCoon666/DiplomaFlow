@@ -34,7 +34,7 @@ function showEditor(type, title) {
 
           <div class="actions">
             <button class="btn-accent" id="save-btn">Сохранить</button>
-            <button class="btn-accent" onclick="navigate('/')">На&nbsp;главную</button>
+            <button class="btn-accent" onclick="navigate('/')">На проверку</button>
           </div>
         </div>
       </section>
