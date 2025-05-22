@@ -1,86 +1,83 @@
-import { navigate } from '@/router';
+/* src/pages/dashboard-student.js – полный файл */
+import { navigate }  from '@/router';
+import { showModal } from '@/components/modal.js';
 
+/* ---------------- данные-заглушки ---------------- */
+const progress = 42;           // %
+const notifications = [
+  { id: 1, title: 'Приближается сдача',
+        text : 'Через три дня необходимо сдать отчёт по проектной практике.' },
+  { id: 2, title: 'Новый комментарий',
+        text : 'Научный руководитель оставил вам комментарий.' },
+  { id: 3, title: 'Открыта оценка',
+        text : 'В системе выставлена итоговая оценка за технологическую практику.' }
+];
+
+/* ---------------- страница ---------------- */
 export default function showDashboard() {
-  const $app = document.querySelector('#app');
-
-  /* --- данные-заглушки --- */
-  const notifications = [
-    { id:1, title:'Приближается сдача', body:'Не забудьте сдать отчёт до 22.03.2025' },
-    { id:2, title:'Новый комментарий',   body:'Руководитель оставил комментарий в разделе 2.1' },
-    { id:3, title:'Открыта оценка',      body:'Вы можете увидеть текущую оценку за практику' }
-  ];
-
-  /* --- разметка --- */
-  $app.innerHTML = `
+  document.querySelector('#app').innerHTML = /*html*/`
     <main class="container">
+      <section class="dashboard-grid">
 
-      <div class="dashboard-grid">
-
-        <!-- Трекер -->
-        <div class="card">
+        <!-- Трекер -------------------------------------------------------------- -->
+        <article class="card">
           <h3>Трекер</h3>
-          <p style="text-align:center;margin-bottom:var(--gap-s)">Проектная пр.</p>
-          <div class="progress"><div style="width:45%"></div></div>
-        </div>
+          <p style="margin-bottom:var(--gap-s)">Проектная&nbsp;пр.</p>
+          <div class="progress"><div style="width:${progress}%"></div></div>
+        </article>
 
-        <!-- Выполнение -->
-        <div class="card">
+        <!-- Выполнение ---------------------------------------------------------- -->
+        <article class="card practice-list">
           <h3>Выполнение</h3>
-          <button class="btn-accent vstack" data-link href="/practice/project">Проектная практика</button>
-          <button class="btn-accent vstack" data-link href="/practice/tech">Технологическая практика</button>
-          <button class="btn-accent vstack" data-link href="/practice/pre">Преддипломная практика</button>
-        </div>
+          <button class="btn-accent" data-path="/practice/project">Проектная&nbsp;практика</button>
+          <button class="btn-accent" data-path="/practice/tech">Технологическая&nbsp;практика</button>
+          <button class="btn-accent" data-path="/practice/pre">Преддипломная&nbsp;практика</button>
+        </article>
 
-        <!-- Уведомления -->
-        <div class="card">
+        <!-- Уведомления --------------------------------------------------------- -->
+        <article class="card">
           <h3>Уведомления</h3>
-          <div class="notifications-list" id="notif"></div>
-        </div>
+          <div id="notif" class="notifications-list"></div>
+        </article>
 
-        <!-- Чат -->
-        <div class="card">
+        <!-- Чат ----------------------------------------------------------------- -->
+        <article class="card" id="chat-card" style="text-align:center">
           <h3>Чат</h3>
-          <a class="vstack" data-link href="/chat" style="display:flex;align-items:center;gap:10px;margin-top:var(--gap-s)">
-            <span style="font-size:1.7rem">👤</span> Научный&nbsp;Руководитель
-          </a>
-        </div>
+          <svg width="48" height="48" fill="currentColor" style="opacity:.6">
+            <use href="#icon-user"></use>
+          </svg>
+          <p style="margin-top:var(--gap-s)">Научный&nbsp;Руководитель</p>
+        </article>
 
-        <!-- Сроки -->
-        <div class="card deadline-card">
+        <!-- Сроки --------------------------------------------------------------- -->
+        <article class="card deadline-card">
           <h3>Сроки</h3>
-          <p><b>Ближайший:</b></p>
-          <p style="color:#b91c1c;font-weight:500">22.03.2025</p>
-        </div>
+          <p style="font-weight:600">Ближайший:</p>
+          <p style="color:#b91c1c">22.03.2025</p>
+        </article>
 
-      </div>
-    </main>`;
+      </section>
+    </main>
+  `;
 
-  /* --- вывод уведомлений --- */
+  /* ——— навигация к практикам ——— */
+  document.querySelectorAll('.practice-list .btn-accent')
+          .forEach(btn => btn.onclick = () => navigate(btn.dataset.path));
+
+  /* ——— открытие чата ——— */
+  document.getElementById('chat-card').onclick = () => navigate('/chat');
+
+  /* ——— вывод и обработка уведомлений ——— */
   const $list = document.getElementById('notif');
   $list.innerHTML = notifications
-    .map(n => `<button class="btn-accent" style="font-weight:500" data-id="${n.id}">${n.title}</button>`)
+    .map(n => `<button class="btn-accent" data-id="${n.id}"
+                         data-title="${n.title}"
+                         data-text="${n.text}"
+                         style="font-weight:500">${n.title}</button>`)
     .join('');
 
-  /* --- modal helpers --- */
-  function openModal(title, body){
-    const $overlay = document.createElement('div');
-    $overlay.className = 'modal-overlay';
-    $overlay.innerHTML = `
-      <div class="modal">
-        <h3>${title}</h3>
-        <p>${body}</p>
-        <button class="btn-accent" id="ok">OK</button>
-      </div>`;
-    document.body.append($overlay);
-    $overlay.querySelector('#ok').onclick = () => $overlay.remove();
-    $overlay.onclick = (e) => { if(e.target===$overlay) $overlay.remove(); };
-  }
-
-  /* --- click on notification --- */
-  $list.addEventListener('click', (e)=>{
-    const btn = e.target.closest('button[data-id]');
-    if(!btn) return;
-    const note = notifications.find(n=>n.id==btn.dataset.id);
-    if(note) openModal(note.title, note.body);
-  });
+  $list.querySelectorAll('.btn-accent')
+       .forEach(btn => btn.onclick = () =>
+         showModal(btn.dataset.title, btn.dataset.text)
+       );
 }

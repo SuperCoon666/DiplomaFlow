@@ -1,7 +1,8 @@
+/* src/pages/chat.js – полный файл */
 import { navigate } from '@/router';
 
 export default function showChat() {
-  document.querySelector('#app').innerHTML = `
+  document.querySelector('#app').innerHTML = /*html*/`
     <main class="container">
       <h2 style="text-align:center;font-size:1.8rem;margin-top:var(--gap-s)">
         Чат с&nbsp;научным&nbsp;руководителем
@@ -40,8 +41,8 @@ export default function showChat() {
     </main>`;
 
   /* --- простая имитация чата (локально) --- */
-  const $msgs = document.getElementById('messages');
-  const $form = document.getElementById('chat-form');
+  const $msgs  = document.getElementById('messages');
+  const $form  = document.getElementById('chat-form');
   const $input = document.getElementById('message');
 
   $form.onsubmit = (e) => {

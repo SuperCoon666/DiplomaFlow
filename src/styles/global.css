@@ -84,15 +84,12 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   background:#d9d9d9;
   overflow:hidden;
 }
-.progress>div{
-  height:100%;
-  background:var(--accent);
-}
+.progress>div{ height:100%; background:var(--accent); }
 
 /* ----------------- Утилиты ----------------- */
 .vstack{ display:flex; flex-direction:column; gap:var(--gap-s); }
 
-/* ----------------- Панель управления (тема / язык / выход) ----------------- */
+/* ----------------- Панель управления ----------------- */
 .control-panel{
   position:fixed;
   top:var(--gap-s);
@@ -111,30 +108,27 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   cursor:pointer;
 }
 
-/* ----------------- Dashboard — сетка ----------------- */
+/* ----------------- Dashboard ----------------- */
 .dashboard-grid{
   display:grid;
   gap:var(--gap-l);
   margin-top:var(--gap-l);
+  /* каждая колонка ≥ 320 px, карточки распределяются «плиткой» */
+  grid-template-columns:repeat(auto-fill,minmax(20rem,1fr));
 }
-
-/* ≥1024 px — три столбца */
+/* ≥1024 px — «Сроки» во втором ряду, 3-й столбец */
 @media(min-width:1024px){
-  .dashboard-grid{ grid-template-columns:repeat(3,1fr); }
-  .deadline-card{ grid-column:3; }               /* «Сроки» во втором ряду, третий столбец */
+  .deadline-card{ grid-column:3; }
 }
-
-/* 640 – 1023 px — два столбца */
+/* 640–1023 px — две колонки */
 @media(min-width:640px) and (max-width:1023px){
   .dashboard-grid{ grid-template-columns:repeat(2,1fr); }
 }
 
 /* отступы между кнопками практик */
-.practice-list .btn-accent + .btn-accent{
-  margin-top:var(--gap-s);
-}
+.practice-list .btn-accent + .btn-accent{ margin-top:var(--gap-s); }
 
-/* ----------------- Notifications — вертикальный список ----------------- */
+/* ----------------- Notifications ----------------- */
 .notifications-list{
   display:flex;
   flex-direction:column;
@@ -144,7 +138,7 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   padding-right:4px;
 }
 
-/* ----------------- Login-страница ----------------- */
+/* ----------------- Login ----------------- */
 .login-card{
   width:100%;
   max-width:560px;
@@ -262,22 +256,13 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   gap:var(--gap-l);
   margin-top:var(--gap-l);
 }
-
-/* левая визитка */
-.profile-pane{
-  width:260px;
-  flex-shrink:0;
-}
-
-/* правая колонка */
+.profile-pane{ width:260px; flex-shrink:0; }
 .dialog-pane{
   flex:1;
   display:flex;
   flex-direction:column;
   gap:var(--gap-m);
 }
-
-/* список сообщений */
 .messages{
   flex:1;
   overflow-y:auto;
@@ -286,8 +271,6 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   gap:var(--gap-s);
   padding-right:4px;
 }
-
-/* сообщение */
 .bubble{
   max-width:60%;
   padding:10px 14px;
@@ -306,8 +289,6 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   color:#111827;
   border-bottom-left-radius:2px;
 }
-
-/* поле ввода */
 .send-box{
   display:flex;
   gap:var(--gap-s);
@@ -321,15 +302,13 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   font:inherit;
   background:#fff;
 }
-
-/* mobile-адаптация чата */
 @media(max-width:768px){
   .chat-layout{ flex-direction:column; }
   .profile-pane{ width:100%; }
   .bubble{ max-width:80%; }
 }
 
-/* ----------------- Modal (для уведомлений) ----------------- */
+/* ----------------- Modal ----------------- */
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -359,12 +338,10 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   font-size:1.4rem;
   text-align:center;
 }
-
 .modal p{
   line-height:1.45;
   margin-bottom:var(--gap-m);
 }
-
 .modal .btn-accent{
   display:block;
   margin-inline:auto;

@@ -1,51 +1,55 @@
-import showDashboard       from '@/pages/dashboard-student.js';
-import showLogin           from '@/pages/login.js';
-import showPracticeProject from '@/pages/practice-project.js';
-import showPracticeTech    from '@/pages/practice-tech.js';
-import showPracticePre     from '@/pages/practice-pre.js';
-import showChat            from '@/pages/chat.js';
-import { getUser }         from '@/store';
+/* src/router/index.js – полный файл */
+import showLogin            from '@/pages/login.js';
+import showDashboard        from '@/pages/dashboard-student.js';
+import showChat             from '@/pages/chat.js';
+import showPracticeProject  from '@/pages/practice-project.js';
+import showPracticeTech     from '@/pages/practice-tech.js';
+import showPracticePre      from '@/pages/practice-pre.js';
 
+/* --------- таблица маршрутов приложения --------- */
 const routes = {
-  '/':                   showDashboard,
-  '/login':              showLogin,
-  '/practice/project':   showPracticeProject,
-  '/practice/tech':      showPracticeTech,
-  '/practice/pre':       showPracticePre,
-  '/chat':               showChat
+  '/':                    showDashboard,
+  '/login':               showLogin,
+  '/chat':                showChat,
+  '/practice/project':    showPracticeProject,
+  '/practice/tech':       showPracticeTech,
+  '/practice/pre':        showPracticePre,
 };
 
+/* ------------------------------------------------
+   Инициализация роутера. Запускается один раз
+   из  main.js  ->  initRouter()
+--------------------------------------------------*/
 export function initRouter() {
-  window.addEventListener('popstate', resolve);
+  /* реагируем на кнопку «назад/вперёд» в браузере */
+  window.addEventListener('popstate', () => render(window.location.pathname));
+
+  /* ловим все ссылки с атрибутом data-link
+     и обрабатываем без перезагрузки страницы */
   document.body.addEventListener('click', (e) => {
-    const link = e.target.closest('a[data-link]');
+    const link = e.target.closest('[data-link]');
     if (!link) return;
     e.preventDefault();
     navigate(link.getAttribute('href'));
   });
-  resolve();
+
+  /* первый рендер при загрузке страницы */
+  render(window.location.pathname);
 }
 
-export function navigate(url) {
-  history.pushState({}, '', url);
-  resolve();
+/* ------------------------------------------------
+   Перейти по маршруту
+--------------------------------------------------*/
+export function navigate(path) {
+  if (path === window.location.pathname) return;          // уже на этой странице
+  history.pushState(null, '', path);
+  render(path);
 }
 
-function resolve() {
-  const user = getUser();
-  const isLogin = location.pathname === '/login';
-
-  /* если не залогинен – пускаем только на /login */
-  if (!user && !isLogin) {
-    history.replaceState({}, '', '/login');
-    return showLogin();
-  }
-  /* если залогинен, но попал на /login – перекидываем домой */
-  if (user && isLogin) {
-    history.replaceState({}, '', '/');
-    return showDashboard();
-  }
-
-  const view = routes[location.pathname] ?? showDashboard;
-  view();
+/* ------------------------------------------------
+   Отрисовать страницу по пути `path`
+--------------------------------------------------*/
+function render(path) {
+  const page = routes[path] || showLogin;                 // fallback: страница логина
+  page();
 }
