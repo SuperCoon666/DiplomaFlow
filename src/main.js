@@ -5,7 +5,7 @@ import { changeLang } from '@/i18n';
 document.addEventListener('DOMContentLoaded', () => {
   initRouter();
 
-  // панель для переключений языка/темы
+  // панель управления темой/языком
   const panel = document.createElement('div');
   panel.className = 'control-panel';
   panel.innerHTML = `
@@ -16,6 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.append(panel);
 
   panel.querySelector('#theme').onclick = toggleTheme;
-  panel.querySelector('#ru').onclick = () => changeLang('ru');
-  panel.querySelector('#en').onclick = () => changeLang('en');
+  panel.querySelector('#ru').onclick   = () => changeLang('ru');
+  panel.querySelector('#en').onclick   = () => changeLang('en');
 });

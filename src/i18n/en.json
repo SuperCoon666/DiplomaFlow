@@ -1,8 +1,7 @@
 {
-    "login.title": "Sign in",
-    "login.email": "E-mail",
-    "login.password": "Password",
-    "login.button": "Sign in",
-    "dashboard.hello": "Hello!"
-  }
-  
+  "login.title": "Sign in",
+  "login.email": "E-mail",
+  "login.password": "Password",
+  "login.button": "Sign in",
+  "dashboard.hello": "Hello!"
+}
