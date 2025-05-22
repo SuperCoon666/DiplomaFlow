@@ -1,9 +1,13 @@
-import { request } from '@/api/http.js';
+/* src/pages/practice-project.js — полный файл */
+import { request }  from '@/api/http.js';
 import { navigate } from '@/router';
 
 /* ---------------- страница ---------------- */
-export default () => showEditor('project', 'Проектная практика');
+export default function () {
+  showEditor('project', 'Проектная практика');
+}
 
+/* ------------------------------------------------------------- */
 function showEditor(type, title) {
   document.querySelector('#app').innerHTML = /*html*/`
     <main class="container">
@@ -39,16 +43,18 @@ function showEditor(type, title) {
 
   const $versions = document.getElementById('versions');
   const $editor   = document.getElementById('editor');
-  let   current   = null;
 
-  /* ---------- список версий ---------- */
-  (async () => {
+  /* ---------- получить список версий ---------- */
+  loadList();
+
+  async function loadList() {
     try {
       const list = await request(`/practice/${type}/versions`);
       renderList(list);
     } catch (e) { console.warn(e.message); }
-  })();
+  }
 
+  /* ---------- рендер списка ---------- */
   function renderList(arr) {
     if (!arr.length) return;
     $versions.innerHTML = '';
@@ -59,24 +65,29 @@ function showEditor(type, title) {
       btn.onclick     = () => loadVersion(v.id, btn);
       $versions.append(btn);
     });
+    /* автоматически открываем самую свежую */
+    loadVersion(arr[0].id, $versions.firstChild);
   }
 
+  /* ---------- загрузить выбранную версию ---------- */
   async function loadVersion(id, el) {
     document.querySelectorAll('.version-item').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
-    current        = id;
-    const v        = await request(`/practice/${type}/version/${id}`);
-    $editor.value  = v.content;
+    try {
+      const v = await request(`/practice/${type}/version/${id}`);
+      $editor.value = v.content;
+    } catch (e) { alert(e.message); }
   }
 
-  /* ---------- сохранить ---------- */
+  /* ---------- сохранить новую версию ---------- */
   document.getElementById('save-btn').onclick = async () => {
     try {
       await request(`/practice/${type}/save`, {
         method:'POST',
-        body:{ id: current, text:$editor.value }
+        body:{ content: $editor.value }
       });
-      location.reload();                // обновить список
+      await loadList();                               // перерисовать список
+      alert('Сохранено!');
     } catch (e) { alert(e.message); }
   };
 }

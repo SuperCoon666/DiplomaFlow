@@ -1,2 +1,8 @@
-import showEditor from './practice-project.js';
-export default () => showEditor('pre', 'Преддипломная практика');
+/* src/pages/practice-pre.js — полный файл */
+import { request }  from '@/api/http.js';
+import { navigate } from '@/router';
+
+export default function () { showEditor('pre', 'Преддипломная практика'); }
+
+/* ---- всё то же, что в practice-project.js ---- */
+function showEditor(type, title) { /* код идентичен */ }
