@@ -1,4 +1,2 @@
-export default function showPracticePre(){
-  document.querySelector('#app').innerHTML=`
-    <main class="container"><h1>Преддипломная практика (заглушка)</h1></main>`;
-}
+import showEditor from './practice-project.js';
+export default () => showEditor('pre', 'Преддипломная практика');

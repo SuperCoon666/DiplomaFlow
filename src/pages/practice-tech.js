@@ -1,4 +1,2 @@
-export default function showPracticeTech(){
-  document.querySelector('#app').innerHTML=`
-    <main class="container"><h1>Технологическая практика (заглушка)</h1></main>`;
-}
+import showEditor from './practice-project.js';
+export default () => showEditor('tech', 'Технологическая практика');
