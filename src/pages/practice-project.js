@@ -1,4 +1,4 @@
-import { request } from '@/api/http.js';          // ← исправлено
+import { request } from '@/api/http.js';
 import { navigate } from '@/router';
 
 /* ---------------- страница ---------------- */
