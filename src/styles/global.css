@@ -1,0 +1,69 @@
+/* src/styles/global.css */
+
+:root {
+  --bg-light: #ffffff;
+  --fg-light: #1a1a1a;
+  --bg-dark: #1e1e1e;
+  --fg-dark: #e1e1e1;
+  --accent: #f28705;     /* оранжевый */
+  --primary: #205375;    /* тёмно-синий */
+}
+
+html[data-theme='light'] {
+  --bg: var(--bg-light);
+  --fg: var(--fg-light);
+}
+html[data-theme='dark'] {
+  --bg: var(--bg-dark);
+  --fg: var(--fg-dark);
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+h1, h2 {
+  color: var(--primary);
+}
+
+button.accent {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+input {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.control-panel {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 1000;
+}
+.control-panel button {
+  border: 1px solid #ccc;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
