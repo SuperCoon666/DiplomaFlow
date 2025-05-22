@@ -1,5 +1,10 @@
-import { initRouter, navigate } from '@/router';
-import { getLang, setLang, logout }        from '@/store';
+/* src/main.js – полная версия -------------------------------------------- */
+
+import { initRouter }                     from '@/router';
+import { getLang, setLang, logout }       from '@/store';
+
+import { setupMockServer } from '/mock/server.js';   // ← mock API
+setupMockServer();                                     // запускаем
 
 /* ---------- инициализация ---------- */
 document.addEventListener('DOMContentLoaded', () => {
@@ -12,8 +17,8 @@ function renderControlPanel() {
   const panel = document.createElement('div');
   panel.className = 'control-panel';
   panel.innerHTML = `
-    <button id="theme-btn" title="Смена темы">🌓</button>
-    <button id="lang-btn"  title="Смена языка"></button>
+    <button id="theme-btn"  title="Смена темы">🌓</button>
+    <button id="lang-btn"   title="Смена языка"></button>
     <button id="logout-btn" title="Выйти">🚪</button>
   `;
   document.body.append(panel);
@@ -26,7 +31,8 @@ function renderControlPanel() {
 
   /* тема */
   const $theme = document.getElementById('theme-btn');
-  if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+  if (localStorage.getItem('theme') === 'dark')
+    document.documentElement.dataset.theme = 'dark';
   $theme.onclick = () => {
     const html = document.documentElement;
     const next = html.dataset.theme === 'dark' ? 'light' : 'dark';

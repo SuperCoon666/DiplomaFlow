@@ -1,32 +1,31 @@
 /* Dev-mock для API. Подключается только при import.meta.env.DEV */
 
 export function setupMockServer() {
-  if (!import.meta.env.DEV) return;          // в проде не мешаемся
+  if (!import.meta.env.DEV) return;          // в production – выходим
 
   const nativeFetch = window.fetch;
-  const wait = (ms) => new Promise(r => setTimeout(r, ms));
+  const wait  = ms => new Promise(r => setTimeout(r, ms));
 
-  /* Хранилище версий: отдельно для каждой практики */
+  /* памяти хватает — храним версии просто в RAM */
   window._versions ||= { project: [], tech: [], pre: [] };
 
-  /* --------─ Вспомогательное чтение тела запроса -------- */
-  async function readBody(body) {
+  async function read(body) {
     if (!body) return {};
-    if (typeof body === 'string')           return JSON.parse(body || '{}');
-    if (body instanceof Blob)              return JSON.parse(await body.text());
-    if (typeof body.text === 'function')   return JSON.parse(await body.text());
+    if (typeof body === 'string')            return JSON.parse(body || '{}');
+    if (body instanceof Blob)               return JSON.parse(await body.text());
+    if (typeof body.text === 'function')    return JSON.parse(await body.text());
     return {};
   }
 
-  /* --------─ Переопределяем fetch -------- */
-  window.fetch = async (url, options = {}) => {
+  /* ------------ patch fetch ------------ */
+  window.fetch = async (url, opts = {}) => {
     const path = url.toString().replace(/^https?:\/\/[^/]+/, '');
 
-    /* === AUTH /login === */
-    if (path === '/api/auth/login' && options.method === 'POST') {
+    /* ---------- AUTH ---------- */
+    if (path === '/api/auth/login' && opts.method === 'POST') {
       await wait(400);
-      const { email } = await readBody(options.body);
-      const role = email?.includes('teacher')
+      const { email } = await read(opts.body);
+      const role  = email?.includes('teacher')
         ? 'teacher'
         : email?.includes('admin')
         ? 'admin'
@@ -39,30 +38,29 @@ export function setupMockServer() {
       );
     }
 
-    /* === AUTH /refresh === */
     if (path === '/api/auth/refresh') {
       await wait(150);
       return new Response(null, { status: 204 });
     }
 
-    /* === PRACTICE versions === */
+    /* ---------- PRACTICE ---------- */
     const m = path.match(/^\/api\/practice\/(project|tech|pre)\/versions$/);
     if (m) {
       const type = m[1];
 
-      /* GET — список версий */
-      if (!options.method || options.method === 'GET') {
+      /* GET */
+      if (!opts.method || opts.method === 'GET') {
         return new Response(
           JSON.stringify(window._versions[type]),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         );
       }
 
-      /* POST — сохранить новую */
-      if (options.method === 'POST') {
-        const { content } = await readBody(options.body);
+      /* POST */
+      if (opts.method === 'POST') {
+        const { content } = await read(opts.body);
         const version = {
-          id: Date.now(),
+          id:   Date.now(),
           date: new Date().toLocaleString(),
           content
         };
@@ -74,7 +72,7 @@ export function setupMockServer() {
       }
     }
 
-    /* --- всё остальное отдаём оригинальному fetch --- */
-    return nativeFetch(url, options);
+    /* всё остальное — обычный fetch */
+    return nativeFetch(url, opts);
   };
 }
