@@ -2,6 +2,8 @@ import '@/components/login-form.js';
 
 export default function showLogin() {
   document.querySelector('#app').innerHTML = `
-    <login-form></login-form>
+    <div class="page-center">
+      <login-form></login-form>
+    </div>
   `;
 }

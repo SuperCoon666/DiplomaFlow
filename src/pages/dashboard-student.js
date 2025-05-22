@@ -1,12 +1,12 @@
-export default function showStudent() {
-  document.querySelector('#app').innerHTML = `
+export default function showStudent(){
+  document.querySelector('#app').innerHTML=`
     <main class="container">
       <section class="dashboard-grid">
 
         <!-- Трекер -->
         <a class="card card-link" data-link href="/tracker">
           <h3>Трекер</h3>
-          <p style="text-align:center;margin-bottom:var(--gap-s)">Проектная пр.</p>
+          <p style="text-align:center;margin-bottom:var(--gap-s)">Проектная&nbsp;пр.</p>
           <div class="progress"><div style="width:45%"></div></div>
         </a>
 
@@ -21,16 +21,20 @@ export default function showStudent() {
         </div>
 
         <!-- Уведомления -->
-        <a class="card card-link" data-link href="/notifications" style="text-align:center">
+        <div class="card">
           <h3>Уведомления</h3>
-          <button class="btn-accent" style="width:auto;padding-inline:24px">Приближа...</button>
-        </a>
+          <div class="notifications-list">
+            <button class="btn-accent" style="width:auto">Приближается сдача</button>
+            <button class="btn-accent" style="width:auto">Новый комментарий&nbsp;от&nbsp;руководителя</button>
+            <button class="btn-accent" style="width:auto">Открыта&nbsp;оценка за&nbsp;практику</button>
+          </div>
+        </div>
 
         <!-- Чат -->
         <a class="card card-link" data-link href="/chat" style="text-align:center">
           <h3>Чат</h3>
-          <p style="font-size:1.1rem;display:flex;justify-content:center;align-items:center;gap:6px">
-            <span style="font-size:1.4rem">👤</span> Научный&nbsp;Руководитель
+          <p style="display:flex;justify-content:center;align-items:center;gap:8px;font-size:1.1rem;margin-top:var(--gap-s)">
+            <span style="font-size:1.5rem">👤</span> Научный&nbsp;Руководитель
           </p>
         </a>
 
@@ -41,6 +45,5 @@ export default function showStudent() {
         </a>
 
       </section>
-    </main>
-  `;
+    </main>`;
 }
