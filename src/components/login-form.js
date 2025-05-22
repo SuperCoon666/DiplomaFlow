@@ -4,10 +4,9 @@ import { navigate } from '@/router';
 import { setUser } from '@/store';
 
 /**
- * Форма входа: теперь валидация полностью отдана
- * встроенным механизмам браузера (HTML5 constraint validation).
- * При некорректном email или слишком коротком пароле
- * появится стандартное всплывающее сообщение.
+ * Форма входа с HTML5-валидацией:
+ * браузер сам покажет всплывающее сообщение, если email неверен
+ * или пароль короче 4 символов.
  */
 class LoginForm extends HTMLElement {
   connectedCallback() {
@@ -25,9 +24,9 @@ class LoginForm extends HTMLElement {
     this.innerHTML = `
       <div class="card container" style="max-width:420px;margin-top:var(--space-l)">
         <form id="form" novalidate>
-          <h2 style="text-align:center">${await t('login.title') ?? 'Вход в систему'}</h2>
+          <h2>${await t('login.title') ?? 'Вход в систему'}</h2>
 
-          <label>
+          <label class="login-field">
             ${await t('login.email') ?? 'Эл. почта'}
             <input
               name="email"
@@ -37,7 +36,7 @@ class LoginForm extends HTMLElement {
             />
           </label>
 
-          <label>
+          <label class="login-field">
             ${await t('login.password') ?? 'Пароль'}
             <input
               name="password"
@@ -48,7 +47,7 @@ class LoginForm extends HTMLElement {
             />
           </label>
 
-          <button class="accent" style="width:100%" type="submit">
+          <button class="btn-accent" type="submit">
             ${await t('login.button') ?? 'Войти'}
           </button>
         </form>
@@ -56,12 +55,11 @@ class LoginForm extends HTMLElement {
     `;
   }
 
-  /** Используем встроенную браузерную проверку. */
   onSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
-    // если есть ошибки — браузер покажет всплывающие подсказки
+    /* встроенная проверка */
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
@@ -70,12 +68,9 @@ class LoginForm extends HTMLElement {
     const data = Object.fromEntries(new FormData(form));
 
     try {
-      const res = await request('/auth/login', {
-        method: 'POST',
-        body: data
-      });
-      setUser(res.user);   // сохраняем пользователя и его роль
-      navigate('/');       // переходим на приветственную страницу
+      const res = await request('/auth/login', { method: 'POST', body: data });
+      setUser(res.user);
+      navigate('/');
     } catch (err) {
       alert('Ошибка: ' + err.message);
     }

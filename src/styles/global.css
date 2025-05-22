@@ -1,93 +1,122 @@
-/* ---------- Цветовая схема и базовые переменные ---------- */
+/* ---------- Цвета и переменные ---------- */
 :root {
-  /* фирменные цвета */
-  --primary: #205375;      /* тёмно-синий */
-  --accent:  #f28705;      /* нежно-оранжевый */
+  --primary : #205375;   /* тёмно-синий */
+  --accent  : #f28705;   /* нежно-оранжевый */
 
-  /* светлая тема по умолчанию */
-  --bg: #ffffff;
-  --fg: #1a1a1a;
+  --bg-light: #ffffff;
+  --fg-light: #1a1a1a;
+  --bg-dark : #1e1e1e;
+  --fg-dark : #e1e1e1;
 
-  /* размеры / отступы */
-  --space-s: 8px;
-  --space-m: 16px;
-  --space-l: 32px;
-  --radius : 6px;
-  --shadow : 0 2px 6px rgba(0,0,0,.08);
+  --space-xs: 4px;
+  --space-s : 8px;
+  --space-m : 16px;
+  --space-l : 32px;
+
+  --radius  : 10px;
+  --shadow  : 0 4px 10px rgba(0,0,0,.08);
 }
 
-html[data-theme='dark'] {
-  --bg: #1e1e1e;
-  --fg: #e1e1e1;
+html[data-theme='light'] { --bg: var(--bg-light); --fg: var(--fg-light); }
+html[data-theme='dark' ] { --bg: var(--bg-dark ); --fg: var(--fg-dark ); }
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:"Inter",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
 }
 
-/* ---------- Базовые стили ---------- */
-* { box-sizing: border-box; }
+/* ---------- Контейнеры и карточки ---------- */
+.container{
+  max-width:960px;
+  margin-inline:auto;
+  padding-inline:var(--space-m);
+}
+h1,h2,h3{color:var(--primary)}
 
-body {
-  margin: 0;
-  font-family: "Inter", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
+.card{
+  background:var(--bg);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:var(--space-m);
+}
+.card h2,h3{margin-top:0;text-align:center}
+
+/* ---------- Кнопка-акцент ---------- */
+.btn-accent{
+  display:block;
+  background:var(--accent);
+  border:none;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:6px;
+  text-align:center;
+  font:inherit;
+  cursor:pointer;
+}
+.btn-accent:hover{opacity:.9}
+
+/* ---------- Поля формы входа ---------- */
+.login-field{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-xs);
+  margin-bottom:var(--space-m);
+}
+.login-field label{font-weight:600}
+.login-field input{
+  padding:8px 10px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  width:100%;
 }
 
-/* заголовки */
-h1, h2, h3 { color: var(--primary); margin-top: 0; }
-
-/* контейнер для центрирования контента */
-.container {
-  max-width: 960px;
-  margin-inline: auto;
-  padding-inline: var(--space-m);
+/* ---------- Прогресс-бар ---------- */
+.progress{
+  width:100%;
+  height:18px;
+  border-radius:9px;
+  background:#e1e1e1;
+  overflow:hidden;
+}
+.progress>div{
+  height:100%;
+  background:var(--accent);
 }
 
-/* карточка-оболочка */
-.card {
-  background: var(--bg);
-  border: 1px solid #ddd;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: var(--space-l);
+/* ---------- Панель темы / языка ---------- */
+.control-panel{
+  position:fixed;top:var(--space-s);right:var(--space-s);
+  display:flex;gap:6px;z-index:1000;
+}
+.control-panel button{
+  border:1px solid #ccc;
+  background:var(--bg);
+  color:var(--fg);
+  padding:4px 8px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-/* сетка для любых карточек */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: clamp(12px, 2vw, 24px);
+/* ---------- Вертикальный стек ---------- */
+.vstack{
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-s);
 }
 
-/* стили элементов формы */
-label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-input  { padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; width: 100%; }
-button { font: inherit; cursor: pointer; border-radius: 4px; }
-
-button.accent {
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
+/* ---------- Сетка Dashboard ---------- */
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:var(--space-l);
+  margin-top:var(--space-l);
 }
 
-/* ---------- Панель переключения темы/языка ---------- */
-.control-panel {
-  position: fixed;
-  top: var(--space-s);
-  right: var(--space-s);
-  display: flex;
-  gap: 6px;
-  z-index: 1000;
-}
-
-.control-panel button {
-  border: 1px solid #ccc;
-  background: var(--bg);
-  color: var(--fg);
-  padding: 4px 8px;
-}
-
-/* ---------- Мини-адаптация для узких экранов ---------- */
-@media (max-width: 480px) {
-  h1, h2 { font-size: 1.25rem; }
-  .card { padding: var(--space-m); }
+/* ---------- Мобильная правка ---------- */
+@media(max-width:480px){
+  .card{padding:var(--space-s)}
+  h1,h2{font-size:1.25rem}
 }

@@ -1,41 +1,45 @@
-// макет приветственной страницы студента
 export default function showStudent() {
   document.querySelector('#app').innerHTML = `
-    <main class="container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-l);margin-top:var(--space-l)">
+    <main class="container">
+      <section class="dashboard-grid">
 
-      <!-- Трекер -->
-      <section class="card" style="text-align:center">
-        <h3>Трекер</h3>
-        <p>Проектная пр.</p>
-        <div style="background:#eee;border-radius:4px;overflow:hidden;height:20px">
-          <div style="width:45%;background:var(--accent);height:100%"></div>
+        <!-- Трекер -->
+        <a class="card card-link" data-link href="/tracker">
+          <h3>Трекер</h3>
+          <p style="text-align:center;margin-bottom:var(--space-s)">Проектная пр.</p>
+          <div class="progress"><div style="width:45%"></div></div>
+        </a>
+
+        <!-- Выполнение -->
+        <div class="card">
+          <h3>Выполнение</h3>
+          <div class="vstack">
+            <a data-link href="/practice/project" class="btn-accent">Проектная практика</a>
+            <a data-link href="/practice/tech"    class="btn-accent">Технологическая практика</a>
+            <a data-link href="/practice/pre"     class="btn-accent">Преддипломная практика</a>
+          </div>
         </div>
-      </section>
 
-      <!-- Выполнение -->
-      <section class="card">
-        <h3 style="text-align:center">Выполнение</h3>
-        <button class="accent" style="width:100%;margin-bottom:8px">Проектная практика</button>
-        <button class="accent" style="width:100%;margin-bottom:8px">Технологическая практика</button>
-        <button class="accent" style="width:100%">Преддипломная практика</button>
-      </section>
+        <!-- Уведомления -->
+        <a class="card card-link" data-link href="/notifications" style="text-align:center">
+          <h3>Уведомления</h3>
+          <button class="btn-accent" style="width:auto;padding-inline:24px">Приближа...</button>
+        </a>
 
-      <!-- Уведомления -->
-      <section class="card" style="text-align:center">
-        <h3>Уведомления</h3>
-        <button class="accent" style="width:100%">Приближа...</button>
-      </section>
+        <!-- Чат -->
+        <a class="card card-link" data-link href="/chat" style="text-align:center">
+          <h3>Чат</h3>
+          <p style="font-size:1.2rem;display:flex;justify-content:center;align-items:center;gap:4px">
+            <span style="font-size:1.4rem">👤</span> Научный Руководитель
+          </p>
+        </a>
 
-      <!-- Чат -->
-      <section class="card" style="text-align:center">
-        <h3>Чат</h3>
-        <p>👤  Научный Руководитель</p>
-      </section>
+        <!-- Сроки -->
+        <a class="card card-link" data-link href="/deadlines">
+          <h3>Сроки</h3>
+          <p><strong>Ближайший:</strong><br><span style="color:#c0392b">22.03.2025</span></p>
+        </a>
 
-      <!-- Сроки -->
-      <section class="card">
-        <h3>Сроки</h3>
-        <p><strong>Ближайший:</strong><br><span style="color:#c0392b">22.03.2025</span></p>
       </section>
     </main>
   `;
