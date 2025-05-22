@@ -1,49 +1,86 @@
-export default function showStudent(){
-  document.querySelector('#app').innerHTML=`
+import { navigate } from '@/router';
+
+export default function showDashboard() {
+  const $app = document.querySelector('#app');
+
+  /* --- данные-заглушки --- */
+  const notifications = [
+    { id:1, title:'Приближается сдача', body:'Не забудьте сдать отчёт до 22.03.2025' },
+    { id:2, title:'Новый комментарий',   body:'Руководитель оставил комментарий в разделе 2.1' },
+    { id:3, title:'Открыта оценка',      body:'Вы можете увидеть текущую оценку за практику' }
+  ];
+
+  /* --- разметка --- */
+  $app.innerHTML = `
     <main class="container">
-      <section class="dashboard-grid">
+
+      <div class="dashboard-grid">
 
         <!-- Трекер -->
-        <a class="card card-link" data-link href="/tracker">
+        <div class="card">
           <h3>Трекер</h3>
-          <p style="text-align:center;margin-bottom:var(--gap-s)">Проектная&nbsp;пр.</p>
+          <p style="text-align:center;margin-bottom:var(--gap-s)">Проектная пр.</p>
           <div class="progress"><div style="width:45%"></div></div>
-        </a>
+        </div>
 
         <!-- Выполнение -->
         <div class="card">
           <h3>Выполнение</h3>
-          <div class="vstack">
-            <a data-link href="/practice/project" class="btn-accent">Проектная практика</a>
-            <a data-link href="/practice/tech"    class="btn-accent">Технологическая практика</a>
-            <a data-link href="/practice/pre"     class="btn-accent">Преддипломная практика</a>
-          </div>
+          <button class="btn-accent vstack" data-link href="/practice/project">Проектная практика</button>
+          <button class="btn-accent vstack" data-link href="/practice/tech">Технологическая практика</button>
+          <button class="btn-accent vstack" data-link href="/practice/pre">Преддипломная практика</button>
         </div>
 
         <!-- Уведомления -->
         <div class="card">
           <h3>Уведомления</h3>
-          <div class="notifications-list">
-            <button class="btn-accent" style="width:auto">Приближается сдача</button>
-            <button class="btn-accent" style="width:auto">Новый комментарий&nbsp;от&nbsp;руководителя</button>
-            <button class="btn-accent" style="width:auto">Открыта&nbsp;оценка за&nbsp;практику</button>
-          </div>
+          <div class="notifications-list" id="notif"></div>
         </div>
 
         <!-- Чат -->
-        <a class="card card-link" data-link href="/chat" style="text-align:center">
+        <div class="card">
           <h3>Чат</h3>
-          <p style="display:flex;justify-content:center;align-items:center;gap:8px;font-size:1.1rem;margin-top:var(--gap-s)">
-            <span style="font-size:1.5rem">👤</span> Научный&nbsp;Руководитель
-          </p>
-        </a>
+          <a class="vstack" data-link href="/chat" style="display:flex;align-items:center;gap:10px;margin-top:var(--gap-s)">
+            <span style="font-size:1.7rem">👤</span> Научный&nbsp;Руководитель
+          </a>
+        </div>
 
         <!-- Сроки -->
-        <a class="card card-link" data-link href="/deadlines">
+        <div class="card deadline-card">
           <h3>Сроки</h3>
-          <p><strong>Ближайший:</strong><br><span style="color:#e11d48">22.03.2025</span></p>
-        </a>
+          <p><b>Ближайший:</b></p>
+          <p style="color:#b91c1c;font-weight:500">22.03.2025</p>
+        </div>
 
-      </section>
+      </div>
     </main>`;
+
+  /* --- вывод уведомлений --- */
+  const $list = document.getElementById('notif');
+  $list.innerHTML = notifications
+    .map(n => `<button class="btn-accent" style="font-weight:500" data-id="${n.id}">${n.title}</button>`)
+    .join('');
+
+  /* --- modal helpers --- */
+  function openModal(title, body){
+    const $overlay = document.createElement('div');
+    $overlay.className = 'modal-overlay';
+    $overlay.innerHTML = `
+      <div class="modal">
+        <h3>${title}</h3>
+        <p>${body}</p>
+        <button class="btn-accent" id="ok">OK</button>
+      </div>`;
+    document.body.append($overlay);
+    $overlay.querySelector('#ok').onclick = () => $overlay.remove();
+    $overlay.onclick = (e) => { if(e.target===$overlay) $overlay.remove(); };
+  }
+
+  /* --- click on notification --- */
+  $list.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button[data-id]');
+    if(!btn) return;
+    const note = notifications.find(n=>n.id==btn.dataset.id);
+    if(note) openModal(note.title, note.body);
+  });
 }
