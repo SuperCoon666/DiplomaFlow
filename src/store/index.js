@@ -1,18 +1,26 @@
-const state = {
-  user: null // { email, role }
-};
-const listeners = new Set();
+/* Глобальное хранилище сведений о текущем пользователе
+   + удобные функции get/set/clear
+   + автоматическое сохранение в localStorage */
 
-export function setUser(user) {
-  state.user = user;
-  listeners.forEach((fn) => fn(state.user));
+let user = null;
+
+/* при старте пробуем прочитать сохранённое состояние */
+try {
+  user = JSON.parse(localStorage.getItem('user') || 'null');
+} catch {
+  user = null;
 }
 
 export function getUser() {
-  return state.user;
+  return user;
 }
 
-export function onUserChange(cb) {
-  listeners.add(cb);
-  return () => listeners.delete(cb);
+export function setUser(u) {
+  user = u;
+  localStorage.setItem('user', JSON.stringify(u));
+}
+
+export function clearUser() {
+  user = null;
+  localStorage.removeItem('user');
 }
