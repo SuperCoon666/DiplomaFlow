@@ -1,10 +1,13 @@
-// src/router/index.js
-import showDashboard from '@/pages/dashboard.js';
 import showLogin from '@/pages/login.js';
+import showStudent from '@/pages/dashboard-student.js';
+import showTeacher from '@/pages/dashboard-teacher.js';
+import showAdmin from '@/pages/dashboard-admin.js';
+import { getUser } from '@/store';
 
-const routes = {
-  '/': showDashboard,   // главная
-  '/login': showLogin   // форма входа
+const routeTable = {
+  student: showStudent,
+  teacher: showTeacher,
+  admin: showAdmin
 };
 
 export function initRouter() {
@@ -16,7 +19,7 @@ export function initRouter() {
       navigate(link.getAttribute('href'));
     }
   });
-  resolve();            // первая отрисовка
+  resolve();
 }
 
 function navigate(url) {
@@ -24,28 +27,22 @@ function navigate(url) {
   resolve();
 }
 
-function isLoggedIn() {
-  return Boolean(document.cookie.match(/jwt=([^;]+)/));
-}
-
 function resolve() {
-  const path = location.pathname;
+  const { pathname } = location;
+  const user = getUser();
 
-  // если пользователь НЕ залогинен и просит любую страницу, кроме /login,
-  // отправляем на /login
-  if (!isLoggedIn() && path !== '/login') {
-    history.replaceState({}, '', '/login');
-    routes['/login']();
+  if (pathname === '/login') {
+    showLogin();
     return;
   }
 
-  // если пользователь УЖЕ залогинен, а в адресе /login — перенаправляем на /
-  if (isLoggedIn() && path === '/login') {
-    history.replaceState({}, '', '/');
-    routes['/']();
+  if (!user) {
+    navigate('/login');
     return;
   }
 
-  // обычное отображение
-  (routes[path] ?? routes['/login'])();
+  const page = routeTable[user.role] ?? showStudent;
+  page();
 }
+
+export { navigate };
