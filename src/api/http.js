@@ -39,8 +39,12 @@ export async function request(
   }
 
   if (res.status === 204) return null;          // No Content
-  try       { return await res.json(); }
-  catch (_) { return await res.text(); }
+  try {
+    const data = await res.json();
+    return (typeof data === 'object' && data !== null) ? data : {};
+  } catch (_) {
+    return {};
+  }
 }
 
 async function refreshToken() {

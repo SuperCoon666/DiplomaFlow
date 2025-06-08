@@ -2,6 +2,8 @@
 
 import { initRouter }                     from '@/router';
 import { getLang, setLang, logout }       from '@/store';
+import { navigate } from '@/router';
+import { showConfirmModal } from '@/components/modal.js';
 
 import { setupMockServer } from '/mock/server.js';   // ← mock API
 setupMockServer();                                     // запускаем
@@ -17,6 +19,7 @@ function renderControlPanel() {
   const panel = document.createElement('div');
   panel.className = 'control-panel';
   panel.innerHTML = `
+    <button id="home-btn"   title="На главную">🏠</button>
     <button id="theme-btn"  title="Смена темы">🌓</button>
     <button id="lang-btn"   title="Смена языка"></button>
     <button id="logout-btn" title="Выйти">🚪</button>
@@ -41,5 +44,15 @@ function renderControlPanel() {
   };
 
   /* выход */
-  document.getElementById('logout-btn').onclick = () => logout();
+  document.getElementById('logout-btn').onclick = () => {
+    showConfirmModal(
+      'Выход из аккаунта',
+      'Вы уверены, что хотите выйти из аккаунта?',
+      () => logout(),
+      () => {} // ничего не делаем при отмене
+    );
+  };
+
+  /* на главную */
+  document.getElementById('home-btn').onclick = () => navigate('/');
 }

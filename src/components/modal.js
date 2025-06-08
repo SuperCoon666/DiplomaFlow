@@ -42,3 +42,25 @@ export function closeModal() {
   overlay = null;
   document.body.style.overflow = '';
 }
+
+/* ---------------- Модальное окно с подтверждением ------------------- */
+export function showConfirmModal(title, text, onOk, onCancel) {
+  if (overlay) closeModal();
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = /*html*/`
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>${title}</h3>
+      <p>${text}</p>
+      <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:18px;">
+        <button class="btn-accent" id="modal-cancel">Отмена</button>
+        <button class="btn-accent" id="modal-ok">Выйти</button>
+      </div>
+    </div>
+  `;
+  document.body.append(overlay);
+  document.getElementById('modal-ok').onclick = () => { closeModal(); onOk && onOk(); };
+  document.getElementById('modal-cancel').onclick = () => { closeModal(); onCancel && onCancel(); };
+  overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+  document.body.style.overflow = 'hidden';
+}

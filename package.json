@@ -23,6 +23,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
-    "tiny-emitter": "^2.1.0"
+    "tiny-emitter": "^2.1.0",
+    "@tinymce/tinymce-react": "^4.3.2"
   }
 }

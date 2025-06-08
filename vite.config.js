@@ -1,5 +1,3 @@
-/* vite.config.js – DEV-proxy только когда нужен реальный бекенд
-     (если переменная окружения REAL_API=true) */
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'url';
 
@@ -11,7 +9,6 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 5174,
     open: '/login',
-    /* proxy включаем только если реально нужен удалённый API */
     proxy: process.env.REAL_API
       ? {
           '/api': {
