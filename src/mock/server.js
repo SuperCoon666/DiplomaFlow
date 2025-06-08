@@ -63,7 +63,6 @@ export function setupMockServer() {
       const v = (window._versions[type] || []).find(v => v.id === +id);
       if (!v)
         return new Response(JSON.stringify({ error: 'Not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
-      if (typeof v.content !== 'string') v.content = '';
       return new Response(
         JSON.stringify(v),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -78,7 +77,7 @@ export function setupMockServer() {
       const version = {
         id: Date.now(),
         createdAt: Date.now(),
-        content: typeof content === 'string' ? content : '',
+        content,
         status: 'draft' // новый статус по умолчанию
       };
       window._versions[type].unshift(version);
