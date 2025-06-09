@@ -1,20 +1,14 @@
 /* src/pages/dashboard-student.js – полный файл */
+import { request } from '@/api/http.js';
+import { getUser } from '@/store';
 import { navigate }  from '@/router';
 import { showModal } from '@/components/modal.js';
 
 /* ---------------- данные-заглушки ---------------- */
 const progress = 42;           // %
-const notifications = [
-  { id: 1, title: 'Приближается сдача',
-        text : 'Через три дня необходимо сдать отчёт по проектной практике.' },
-  { id: 2, title: 'Новый комментарий',
-        text : 'Научный руководитель оставил вам комментарий.' },
-  { id: 3, title: 'Открыта оценка',
-        text : 'В системе выставлена итоговая оценка за технологическую практику.' }
-];
 
 /* ---------------- страница ---------------- */
-export default function showDashboard() {
+export default async function showDashboard() {
   document.querySelector('#app').innerHTML = /*html*/`
     <main class="container">
       <section class="dashboard-grid">
@@ -69,15 +63,24 @@ export default function showDashboard() {
 
   /* ——— вывод и обработка уведомлений ——— */
   const $list = document.getElementById('notif');
-  $list.innerHTML = notifications
-    .map(n => `<button class="btn-accent" data-id="${n.id}"
-                         data-title="${n.title}"
-                         data-text="${n.text}"
-                         style="font-weight:500">${n.title}</button>`)
-    .join('');
+  const uid = getUser()?.id;
+  let list = [];
+  try { list = await request(`/notifications/${uid}`); }
+  catch(e){ console.warn(e.message); }
 
-  $list.querySelectorAll('.btn-accent')
-       .forEach(btn => btn.onclick = () =>
-         showModal(btn.dataset.title, btn.dataset.text)
-       );
+  $list.innerHTML = list.map(n => `
+    <button class="${n.status ? 'btn-grey' : 'btn-accent'}"
+            data-id="${n.id}"
+            data-title="${n.type}"
+            data-msg="${n.message}">
+      ${n.message}
+    </button>`).join('');
+
+  $list.querySelectorAll('.btn-accent, .btn-grey')
+       .forEach(btn => btn.onclick = async () => {
+         showModal(btn.dataset.title, btn.dataset.msg);
+         await request(`/notifications/${btn.dataset.id}/read`,{method:'PUT'});
+         btn.classList.remove('btn-accent');
+         btn.classList.add('btn-grey');
+       });
 }

@@ -449,3 +449,16 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   font-size: 1.1em;
   vertical-align: middle;
 }
+
+.btn-grey{
+  display:inline-block;
+  background:#d1d5db;
+  color:#111;
+  padding:12px 22px;
+  border:none;
+  border-radius:10px;
+  font:600 1rem/1 inherit;
+  cursor:pointer;
+  transition:background .15s;
+}
+.btn-grey:hover{ background:#cbd5e1; }
