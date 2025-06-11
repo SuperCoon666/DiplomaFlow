@@ -11,12 +11,7 @@ export default async function showDashboardTeacher() {
   // данные
   const students = await request(`/teacher/${id}/students`);
   const notes    = await request(`/notifications/${id}`);
-  // Демо-работы на проверку (можно заменить на реальный запрос)
-  const reviews = [
-    { name: 'Иванов Иван №1', group: 'ИКБО-20-21', practice: 'Проектная практика' },
-    { name: 'Петров Пётр №2', group: 'ИКБО-20-22', practice: 'Технологическая практика' },
-    { name: 'Сидорова Анна №3', group: 'ИКБО-20-21', practice: 'Преддипломная практика' },
-  ];
+  const reviews  = await request(`/teacher/${id}/reviews`);
 
   // разметка
   document.querySelector('#app').innerHTML = /*html*/`

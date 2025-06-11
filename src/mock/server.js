@@ -253,6 +253,25 @@ export function setupMockServer() {
       );
     }
 
+    // GET /api/teacher/{tid}/reviews
+    const mReviews = path.match(/^\/api\/teacher\/(\d+)\/reviews$/);
+    if (mReviews && (!opts.method || opts.method === 'GET')) {
+      const tid = +mReviews[1];
+      window._reviews ||= {};
+      if (!window._reviews[tid]) {
+        const groups = ['ИКБО-20-21', 'ИКБО-20-22'];
+        window._reviews[tid] = [
+          { name: 'Иванов Иван №1', group: groups[0], practice: 'Проектная практика' },
+          { name: 'Петров Пётр №2', group: groups[1], practice: 'Технологическая практика' },
+          { name: 'Сидорова Анна №3', group: groups[0], practice: 'Преддипломная практика' },
+        ];
+      }
+      return new Response(
+        JSON.stringify(window._reviews[tid]),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     /* остальное — реальный fetch */
     return nativeFetch(url, opts);
   };
