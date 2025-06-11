@@ -18,6 +18,9 @@ export function setupMockServer() {
   const saveNotifs = () =>
     localStorage.setItem(LS_KEY, JSON.stringify(window._notifications));
 
+  /* Хранилище студентов в RAM */
+  window._students ||= {};
+
   function generateNotifications(u){
     if (window._notifications[u.id]) return;
     const samples = [
@@ -34,6 +37,8 @@ export function setupMockServer() {
       { type:'ОТЧЁТ',        msg:'Доступна новая форма итогового отчёта по практике' },
       { type:'ПРОВЕРКА',     msg:'Версия отправлена на проверку рецензенту' },
       { type:'УТВЕРЖДЕНИЕ',  msg:'Тематика ВКР утверждена кафедрой' },
+      { type:'ОТВЕТ СТУДЕНТА', msg:'Студент загрузил новую версию' },
+      { type:'ЗАЯВКА НА ДИПЛОМ', msg:'Поступила заявка на тему ВКР' },
     ];
     const n = 3 + Math.floor(Math.random()*3);
     window._notifications[u.id] = Array.from({length:n}, (_,i)=>{
@@ -83,6 +88,15 @@ export function setupMockServer() {
       document.cookie = `jwt=${token}; path=/; samesite=lax`;
 
       console.log('UserDto после логина:', user);
+
+      if (userRole === 'TEACHER' && !window._students[user.id]) {
+        const groups = ['ИКБО-20-21','ИКБО-20-22'];
+        window._students[user.id] = Array.from({length:8},(_,i)=>({
+          id   : Date.now()+i,
+          name : `Иванов Иван №${i+1}`,
+          group: groups[i%groups.length]
+        }));
+      }
 
       return new Response(
         JSON.stringify({ token, user }),
@@ -216,6 +230,27 @@ export function setupMockServer() {
         }
       }
       return new Response('Not found',{status:404});
+    }
+
+    // GET /api/teacher/{tid}/students
+    const mTeach = path.match(/^\/api\/teacher\/(\d+)\/students$/);
+    if (mTeach && (!opts.method || opts.method === 'GET')) {
+      const tid = +mTeach[1];
+
+      // если ещё нет – сгенерируем демо-студентов
+      if (!window._students[tid]) {
+        const groups = ['ИКБО-20-21', 'ИКБО-20-22'];
+        window._students[tid] = Array.from({ length: 8 }, (_, i) => ({
+          id   : Date.now() + i,
+          name : `Иванов Иван №${i + 1}`,
+          group: groups[i % groups.length]
+        }));
+      }
+
+      return new Response(
+        JSON.stringify(window._students[tid]),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     /* остальное — реальный fetch */
