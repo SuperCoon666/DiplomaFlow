@@ -8,6 +8,11 @@ class LoginForm extends HTMLElement {
     this.render();
     this.off = onLangChange(()=>this.render());
     this.addEventListener('submit',this.onSubmit);
+    this.addEventListener('click', e=>{
+      const b=e.target.closest('.btn-accent[data-role]');
+      if(!b) return;
+      this.querySelector('input[name=role]').value = b.dataset.role;
+    });
   }
   disconnectedCallback(){
     this.off?.();
@@ -30,7 +35,11 @@ class LoginForm extends HTMLElement {
             <input id="pass" name="password" type="password" required minlength="4" placeholder="••••">
           </div>
 
-          <button class="btn-accent" type="submit">${await t('login.button') ?? 'Войти'}</button>
+          <input type="hidden" name="role" value="STUDENT">
+          <div class="login-btns">
+            <button type="submit" class="btn-accent" data-role="STUDENT">Войти как студент</button>
+            <button type="submit" class="btn-accent" data-role="TEACHER">Войти как преподаватель</button>
+          </div>
         </form>
       </div>`;
   }
@@ -40,7 +49,6 @@ class LoginForm extends HTMLElement {
     const form=e.target;
     if(!form.checkValidity()){form.reportValidity();return;}
     const data=Object.fromEntries(new FormData(form));
-
     try{
       const res=await request('/auth/login',{method:'POST',body:data});
       setUser(res.user);navigate('/');

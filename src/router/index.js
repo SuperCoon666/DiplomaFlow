@@ -1,6 +1,8 @@
 /* src/router/index.js – полный файл */
+import { getUser } from '@/store';
 import showLogin            from '@/pages/login.js';
-import showDashboard        from '@/pages/dashboard-student.js';
+import showDashboardStudent from '@/pages/dashboard-student.js';
+import showDashboardTeacher from '@/pages/dashboard-teacher.js';
 import showChat             from '@/pages/chat.js';
 import showPracticeProject  from '@/pages/practice-project.js';
 import showPracticeTech     from '@/pages/practice-tech.js';
@@ -8,7 +10,9 @@ import showPracticePre      from '@/pages/practice-pre.js';
 
 /* --------- таблица маршрутов приложения --------- */
 const routes = {
-  '/':                    showDashboard,
+  '/': () => (getUser()?.role === 'TEACHER'
+             ? showDashboardTeacher()
+             : showDashboardStudent()),
   '/login':               showLogin,
   '/chat':                showChat,
   '/practice/project':    showPracticeProject,

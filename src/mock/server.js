@@ -67,27 +67,17 @@ export function setupMockServer() {
     /* ---------- AUTH ---------- */
     if (path === '/api/auth/login' && opts.method === 'POST') {
       await wait(400);
-      const { email } = await read(opts.body);
-
-      // ищем или создаём пользователя
-      let user = window._users.find(u => u.email === email);
-      if (!user) {
-        const id   = Date.now();
-        const role = /teacher/.test(email) ? 'TEACHER'
-                  : /admin/.test(email)   ? 'ADMIN'
-                  :                          'STUDENT';
-        const [namePart] = email.split('@');
-        user = {
-          id,
-          name: namePart.replace(/[._]/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
-          email,
-          groupName   : role === 'STUDENT' ? 'Б22-05' : '',
-          role,
-          supervisorId: role === 'STUDENT' ? 100 : null
-        };
-        window._users.push(user);
-      }
-
+      const { email, password, role = 'STUDENT' } = await read(opts.body);
+      const userRole = role.toUpperCase();
+      const user = {
+        id          : Date.now(),
+        email,
+        name        : email.split('@')[0] || 'demo',
+        role        : userRole,
+        groupName   : userRole==='STUDENT' ? 'Б22-05' : '',
+        supervisorId: userRole==='STUDENT' ? 100 : null
+      };
+      window._users.push(user);
       generateNotifications(user);
       const token = `mock.${user.role}.${user.id}`;
       document.cookie = `jwt=${token}; path=/; samesite=lax`;
