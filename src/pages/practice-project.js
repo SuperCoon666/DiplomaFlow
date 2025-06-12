@@ -1,6 +1,8 @@
 /* src/pages/practice-project.js — полный файл */
 import { request }  from '@/api/http.js';
 import { navigate } from '@/router';
+import { getUser } from '@/store';
+import { showTextareaModal } from '@/components/modal.js';
 
 /* ---------------- страница ---------------- */
 export default function () {
@@ -206,5 +208,64 @@ function showEditor(type, title) {
         h.id = 'toc-h-' + i;
       });
     }
+  }
+
+  function currentVersionId(){
+    const a=document.querySelector('.version-item.active');
+    return a ? a.dataset.id : null;
+  }
+
+  const me = getUser();
+  const isTeacher = me?.role === 'TEACHER';
+  const $actions = document.querySelector('.actions');
+
+  if (isTeacher) {
+    $actions.innerHTML = `
+      <button class="btn-accent" id="rework-btn">Правки</button>
+      <button class="btn-accent" id="accept-btn">Принять</button>`;
+
+    document.getElementById('accept-btn').onclick = async () => {
+      const id = currentVersionId();
+      if (!id) return alert('Нет версии');
+      await request(`/practice/${type}/version/${id}/accept`, { method: 'PUT' });
+      await loadList();
+    };
+    document.getElementById('rework-btn').onclick = () => {
+      const id = currentVersionId();
+      if (!id) return alert('Нет версии');
+      showTextareaModal('Замечания', async (txt) => {
+        await request(`/practice/${type}/version/${id}/rework`, {
+          method: 'PUT', body: { comment: txt }
+        });
+        await loadList();
+      });
+    };
+  } else {
+    document.querySelector('.actions button[onclick]').onclick = async () => {
+      const active = document.querySelector('.version-item.active');
+      if (!active) return alert('Нет выбранной версии!');
+      const id = active.dataset.id;
+      try {
+        await request(`/practice/${type}/send/${id}`, { method: 'POST' });
+        await loadList();
+        alert('Версия отправлена на проверку!');
+      } catch (e) { alert(e.message); }
+    };
+    document.getElementById('save-btn').onclick = async () => {
+      try {
+        let content = '';
+        if (window.tinymce && window.tinymce.get('editor')) {
+          content = window.tinymce.get('editor').getContent();
+        } else {
+          content = document.getElementById('editor').value;
+        }
+        await request(`/practice/${type}/save`, {
+          method:'POST',
+          body:{ content }
+        });
+        await loadList();
+        alert('Сохранено!');
+      } catch (e) { alert(e.message); }
+    };
   }
 }

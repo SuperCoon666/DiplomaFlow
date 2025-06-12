@@ -637,3 +637,18 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   padding:8px;
   cursor:pointer;
 }
+
+.modal textarea{padding:8px;border:1px solid #cbd5e1;border-radius:6px;
+  width:100%;min-height:90px;font:inherit;resize:vertical;margin-top:12px;
+}
+
+.btn-row{
+  display:flex;
+  justify-content:center;   /* блок кнопок центрирован */
+  gap:20px;                 /* одинаковый промежуток */
+  margin-top:22px;
+}
+.btn-row>.btn-accent,
+.btn-row>.btn-grey{
+  min-width:140px;          /* одинаковая ширина */
+}

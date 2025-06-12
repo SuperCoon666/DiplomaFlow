@@ -57,3 +57,29 @@ export function showConfirmModal(title, text, onOk, onCancel) {
   overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
   document.body.style.overflow = 'hidden';
 }
+
+export function showTextareaModal(title, onOk){
+  if (overlay) closeModal();
+  overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = /*html*/`
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>${title}</h3>
+      <textarea id="corr-text" style="width:100%;height:160px"></textarea>
+      <div class="btn-row">
+        <button class="btn-accent" id="modal-ok">На доработку</button>
+        <button class="btn-grey" id="modal-cancel">Отмена</button>
+      </div>
+    </div>
+  `;
+  document.body.append(overlay);
+
+  document.getElementById('modal-ok').onclick = ()=>{
+    const txt=document.getElementById('corr-text').value.trim();
+    onOk(txt);
+    closeModal();
+  };
+  document.getElementById('modal-cancel').onclick = closeModal;
+  overlay.onclick = e => { if(e.target === overlay) closeModal(); };
+  document.body.style.overflow='hidden';
+}

@@ -116,7 +116,22 @@ export function setupMockServer() {
     if (mList && (!opts.method || opts.method === 'GET')) {
       const type = mList[1];
       const arr = window._versions[type] || [];
-      // Возвращаем только мета-данные (без content)
+
+      if (arr.length === 0) {
+        const statuses = ['pending', 'accepted', 'rework', 'draft'];
+        for (let i = 0; i < 3; i++) {
+          arr.push({
+            id: Date.now() + i,
+            versionNumber: i + 1,
+            createdAt: Date.now() - (3 - i) * 86400000,
+            content: `<p>Это демо-версия №${i + 1} для <b>${type}</b> практики.</p>`,
+            status: statuses[i % statuses.length],
+            comment: i === 2 ? 'Нужно больше деталей в разделе 2.' : ''
+          });
+        }
+        window._versions[type] = arr;
+      }
+      
       const meta = arr.map(v => ({
         id: v.id,
         versionNumber: v.versionNumber,
@@ -293,6 +308,20 @@ export function setupMockServer() {
         JSON.stringify(window._studentCards[sid]),
         { status:200, headers:{'Content-Type':'application/json'} }
       );
+    }
+
+    const mAccept = path.match(/^\/api\/practice\/(project|tech|pre)\/version\/(\d+)\/accept$/);
+    if (mAccept && opts.method==='PUT'){
+      const [ ,type,id ] = mAccept; const v=window._versions[type].find(v=>v.id==id);
+      if(!v) return new Response('not found',{status:404});
+      v.status='accepted'; return new Response(JSON.stringify(v),{status:200});
+    }
+    const mRework = path.match(/^\/api\/practice\/(project|tech|pre)\/version\/(\d+)\/rework$/);
+    if (mRework && opts.method==='PUT'){
+      const [ ,type,id ] = mRework; const v=window._versions[type].find(v=>v.id==id);
+      if(!v) return new Response('not found',{status:404});
+      const { comment='' } = await read(opts.body);
+      v.status='rework'; v.comment=comment; return new Response(JSON.stringify(v),{status:200});
     }
 
     /* остальное — реальный fetch */
