@@ -18,7 +18,7 @@ export default async function showStudentCard({ params }){
         <div class="avatar"></div>
         <h2>${card.name?.replace(' ', '<br>') || 'Неизвестно'}</h2>
         <p>${card.group}</p>
-        <button class="btn-accent" onclick="navigate('/chat?user=${sid}')">Чат</button>
+        <button id="chat-btn" class="btn-accent">Чат</button>
       </section>
       <section class="card info">
         <h3 style="text-align:center;margin-bottom:24px">Тема: ${card.topic}</h3>
@@ -32,6 +32,8 @@ export default async function showStudentCard({ params }){
         </button>
       </section>
     </div>`;
+
+  document.getElementById('chat-btn').onclick = () => navigate(`/chat?user=${sid}`);
 
   /* всплывающее окно со списком практик */
   document.getElementById('worksBtn').onclick = () => {

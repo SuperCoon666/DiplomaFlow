@@ -308,8 +308,10 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
 
 /* ----------------- Чат ----------------- */
 .chat-layout{
-  display:flex;
+  display:grid;
+  grid-template-columns:260px 1fr;
   gap:var(--gap-l);
+  height: calc(100vh - 160px);
 }
 .profile-pane{ width:260px; flex-shrink:0; }
 .dialog-pane{

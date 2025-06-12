@@ -71,11 +71,12 @@ function matchRoute(path){
 }
 
 function render(path) {
+  const pathname = path.split('?')[0];
   // exact match
-  if (routes[path]) return routes[path]();
+  if (routes[pathname]) return routes[pathname]();
 
   // dynamic match  (/student/123 → /student/:sid)
-  const m = matchRoute(path);
+  const m = matchRoute(pathname);
   if (m) return m.page({ params:m.params });
 
   // fallback
