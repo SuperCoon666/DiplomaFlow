@@ -50,7 +50,11 @@ class LoginForm extends HTMLElement {
     if(!form.checkValidity()){form.reportValidity();return;}
     const data=Object.fromEntries(new FormData(form));
     try{
-      const res=await request('/auth/login',{method:'POST',body:data});
+      const res=await request('/auth/login',{
+        method:'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
       setUser(res.user);navigate('/');
     }catch(err){alert('Ошибка: '+err.message);}
   };

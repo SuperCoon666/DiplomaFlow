@@ -1,18 +1,21 @@
 /* src/main.js – полная версия -------------------------------------------- */
 
 import { initRouter }                     from '@/router';
-import { getLang, setLang, logout }       from '@/store';
+import { getLang, setLang, onLangChange } from '@/i18n';
+import { logout }                         from '@/store';
 import { navigate } from '@/router';
 import { showConfirmModal } from '@/components/modal.js';
 
-import { setupMockServer } from '/mock/server.js';   // ← mock API
-setupMockServer();                                     // запускаем
+if (!localStorage.getItem('lang')) setLang('ru');
+
+if (import.meta.env.DEV && !import.meta.env.REAL_API) {
+  const { setupMockServer } = await import('/mock/server.js');
+  setupMockServer();
+}
 
 /* ---------- инициализация ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  renderControlPanel();
-  initRouter();
-});
+renderControlPanel();
+initRouter();
 
 /* ---------- панель в правом-верхнем углу ---------- */
 function renderControlPanel() {
@@ -40,13 +43,14 @@ function renderControlPanel() {
   }
   updatePanel();
   window.addEventListener('popstate', updatePanel);
-  window.addEventListener('va-update-panel', updatePanel);
+  onLangChange(updatePanel);
 
   /* язык */
   const $lang = document.getElementById('lang-btn');
   const applyLangTxt = () => { $lang.textContent = getLang() === 'ru' ? 'RU' : 'EN'; };
   applyLangTxt();
-  $lang.onclick = () => { setLang(getLang() === 'ru' ? 'en' : 'ru'); applyLangTxt(); };
+  $lang.onclick = () => { setLang(getLang() === 'ru' ? 'en' : 'ru'); };
+  onLangChange(applyLangTxt);
 
   /* тема */
   const $theme = document.getElementById('theme-btn');

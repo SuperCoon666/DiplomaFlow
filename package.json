@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
+    "dev:real": "REAL_API=1 VITE_API_URL=http://localhost:8080 vite",
     "build": "vite build",
     "preview": "vite preview"
   },

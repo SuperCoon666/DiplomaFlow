@@ -6,11 +6,6 @@ export const getUser   = ()       => user;
 export const setUser   = (u)      => { user = u; localStorage.setItem('user', JSON.stringify(u)); };
 export const clearUser = ()       => { user = null; localStorage.removeItem('user'); };
 
-/* ------------------ Язык интерфейса ------------------ */
-let lang = localStorage.getItem('lang') || 'ru';
-export const getLang = ()      => lang;
-export const setLang = (l)     => { lang = l; localStorage.setItem('lang', l); };
-
 /* ------------------ Выход ------------------ */
 export function logout() {
   clearUser();
