@@ -48,11 +48,11 @@ export default async function showDashboardTeacher() {
             <div>Практика</div>
           </div>
           ${reviews.map(r => `
-            <div class="review-row">
+            <button class="review-row" data-type="${r.type}">
               <div>${r.name}</div>
               <div>${r.group}</div>
               <div>${r.practice}</div>
-            </div>`).join('')}
+            </button>`).join('')}
         </div>
       </article>
     </div>`;
@@ -67,4 +67,8 @@ export default async function showDashboardTeacher() {
         btn.classList.remove('btn-accent'); btn.classList.add('btn-grey');
       }
     });
+
+  document.querySelectorAll('.review-row')
+    .forEach(btn => btn.onclick = () =>
+      navigate(`/practice/${btn.dataset.type}`));
 }

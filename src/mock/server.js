@@ -259,11 +259,10 @@ export function setupMockServer() {
       const tid = +mReviews[1];
       window._reviews ||= {};
       if (!window._reviews[tid]) {
-        const groups = ['ИКБО-20-21', 'ИКБО-20-22'];
         window._reviews[tid] = [
-          { name: 'Иванов Иван №1', group: groups[0], practice: 'Проектная практика' },
-          { name: 'Петров Пётр №2', group: groups[1], practice: 'Технологическая практика' },
-          { name: 'Сидорова Анна №3', group: groups[0], practice: 'Преддипломная практика' },
+          { name:'Иванов Иван №1', group:'ИКБО-20-21', practice:'Проектная практика',        type:'project' },
+          { name:'Петров Пётр №2', group:'ИКБО-20-22', practice:'Технологическая практика',  type:'tech'    },
+          { name:'Сидорова Анна №3', group:'ИКБО-20-21', practice:'Преддипломная практика', type:'pre'     },
         ];
       }
       return new Response(
