@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ---------- панель в правом-верхнем углу ---------- */
 function renderControlPanel() {
+  const backBtn = document.createElement('button');
+  backBtn.id = 'back-btn';
+  backBtn.className = 'global-back-btn';
+  backBtn.title = 'Назад';
+  backBtn.innerHTML = '←';
+  document.body.append(backBtn);
+
   const panel = document.createElement('div');
   panel.className = 'control-panel';
   panel.innerHTML = `
@@ -25,6 +32,15 @@ function renderControlPanel() {
     <button id="logout-btn" title="Выйти">🚪</button>
   `;
   document.body.append(panel);
+
+  function updatePanel(){
+    const isLogin = location.pathname === '/login';
+    document.getElementById('back-btn' ).style.display = isLogin ? 'none' : 'block';
+    document.getElementById('logout-btn').style.display = isLogin ? 'none' : 'inline-block';
+  }
+  updatePanel();
+  window.addEventListener('popstate', updatePanel);
+  window.addEventListener('va-update-panel', updatePanel);
 
   /* язык */
   const $lang = document.getElementById('lang-btn');
@@ -55,4 +71,7 @@ function renderControlPanel() {
 
   /* на главную */
   document.getElementById('home-btn').onclick = () => navigate('/');
+
+  /* назад */
+  document.getElementById('back-btn').onclick = () => history.back();
 }

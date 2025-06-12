@@ -7,6 +7,7 @@ import showChat             from '@/pages/chat.js';
 import showPracticeProject  from '@/pages/practice-project.js';
 import showPracticeTech     from '@/pages/practice-tech.js';
 import showPracticePre      from '@/pages/practice-pre.js';
+import showStudentCard      from '@/pages/student-card.js';
 
 /* --------- таблица маршрутов приложения --------- */
 const routes = {
@@ -18,6 +19,7 @@ const routes = {
   '/practice/project':    showPracticeProject,
   '/practice/tech':       showPracticeTech,
   '/practice/pre':        showPracticePre,
+  '/student/:sid':        showStudentCard,
 };
 
 /* ------------------------------------------------
@@ -48,12 +50,34 @@ export function navigate(path) {
   if (path === window.location.pathname) return;          // уже на этой странице
   history.pushState(null, '', path);
   render(path);
+  window.dispatchEvent(new Event('va-update-panel'));
 }
 
 /* ------------------------------------------------
    Отрисовать страницу по пути `path`
 --------------------------------------------------*/
+function matchRoute(path){
+  for (const pattern in routes){
+    if (!pattern.includes(':')) continue;
+    const regex   = new RegExp('^'+pattern.replace(/:[^/]+/g,'([^/]+)')+'$');
+    const matches = path.match(regex);
+    if (matches){
+      const keys = (pattern.match(/:[^/]+/g) || []).map(k=>k.slice(1));
+      const params = Object.fromEntries(keys.map((k,i)=>[k,matches[i+1]]));
+      return { page: routes[pattern], params };
+    }
+  }
+  return null;
+}
+
 function render(path) {
-  const page = routes[path] || showLogin;                 // fallback: страница логина
-  page();
+  // exact match
+  if (routes[path]) return routes[path]();
+
+  // dynamic match  (/student/123 → /student/:sid)
+  const m = matchRoute(path);
+  if (m) return m.page({ params:m.params });
+
+  // fallback
+  showLogin();
 }

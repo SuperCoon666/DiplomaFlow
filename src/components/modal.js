@@ -8,30 +8,23 @@
 let overlay = null;
 
 /* ---------------- Показать модальное окно ------------------- */
-export function showModal(title, text) {
-  // если уже есть открытая модалка — закрываем
+export function showModal(title, html, onOpen) {
   if (overlay) closeModal();
 
-  /* сам оверлей (тёмный фон) */
   overlay = document.createElement('div');
   overlay.className = 'modal-overlay';
-
-  /* содержимое модального окна */
   overlay.innerHTML = /*html*/`
     <div class="modal" role="dialog" aria-modal="true">
       <h3>${title}</h3>
-      <p>${text}</p>
-      <button class="btn-accent" id="modal-ok">ОК</button>
-    </div>
-  `;
+      ${html}
+      <button id="modal-ok" class="btn-accent" style="margin-top:24px">OK</button>
+    </div>`;
 
   document.body.append(overlay);
+  if (onOpen) onOpen(overlay);
 
-  /* закрытие по кнопке «ОК» или клику по фону */
   document.getElementById('modal-ok').onclick = closeModal;
-  overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-
-  /* блокируем прокрутку страницы под модалкой */
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
   document.body.style.overflow = 'hidden';
 }
 

@@ -21,10 +21,9 @@ export default async function showDashboardTeacher() {
           <h3>Студенты</h3>
           <div class="teacher-stu-list">
             ${students.map(s => `
-              <div class="stu-row">
-                <span>${s.name}</span>
-                <span>${s.group}</span>
-              </div>`).join('')}
+              <button class="stu-row" data-id="${s.id}">
+                <span>${s.name}</span><span>${s.group}</span>
+              </button>`).join('')}
           </div>
         </article>
 
@@ -71,4 +70,8 @@ export default async function showDashboardTeacher() {
   document.querySelectorAll('.review-row')
     .forEach(btn => btn.onclick = () =>
       navigate(`/practice/${btn.dataset.type}`));
+
+  document.querySelectorAll('.stu-row')
+    .forEach(btn => btn.onclick = () =>
+      navigate(`/student/${btn.dataset.id}`));
 }

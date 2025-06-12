@@ -49,7 +49,8 @@ export function setupMockServer() {
         type      : s.type,
         message   : s.msg,
         status    : false,
-        createdAt : Date.now()
+        createdAt : Date.now(),
+        progress  : { project:45, tech:20, pre:0 }
       };
     });
     saveNotifs();
@@ -94,7 +95,8 @@ export function setupMockServer() {
         window._students[user.id] = Array.from({length:8},(_,i)=>({
           id   : Date.now()+i,
           name : `Иванов Иван №${i+1}`,
-          group: groups[i%groups.length]
+          group: groups[i%groups.length],
+          progress: { project:45, tech:20, pre:0 }
         }));
       }
 
@@ -243,7 +245,8 @@ export function setupMockServer() {
         window._students[tid] = Array.from({ length: 8 }, (_, i) => ({
           id   : Date.now() + i,
           name : `Иванов Иван №${i + 1}`,
-          group: groups[i % groups.length]
+          group: groups[i % groups.length],
+          progress: { project:45, tech:20, pre:0 }
         }));
       }
 
@@ -268,6 +271,27 @@ export function setupMockServer() {
       return new Response(
         JSON.stringify(window._reviews[tid]),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // GET /api/student/{sid}
+    const mCard = path.match(/^\/api\/student\/(\d+)$/);
+    if (mCard && (!opts.method || opts.method === 'GET')) {
+      const sid = +mCard[1];
+      window._studentCards ||= {};
+      if (!window._studentCards[sid]) {
+        const grp = sid % 2 ? 'ИКБО-20-21' : 'ИКБО-20-22';
+        window._studentCards[sid] = {
+          id:sid,
+          name:`Иванов Иван №${sid%10}`,
+          group:grp,
+          topic:'Система организации выполнения ВКР студентов',
+          progress:{ project:45, tech:20, pre:0 }
+        };
+      }
+      return new Response(
+        JSON.stringify(window._studentCards[sid]),
+        { status:200, headers:{'Content-Type':'application/json'} }
       );
     }
 
