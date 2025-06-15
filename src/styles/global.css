@@ -91,6 +91,10 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   box-shadow:0 12px 30px rgba(0,0,0,.12);
 }
 
+#tracker-card {
+  cursor: pointer;
+}
+
 .card h3 {
   color: #222;
   font-size: 1.18rem;
@@ -125,6 +129,18 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   overflow:hidden;
 }
 .progress>div{ height:100%; background:var(--accent); }
+
+.progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-xs);
+}
+.progress-item p {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.8;
+  padding-left: 4px;
+}
 
 /* ----------------- Утилиты ----------------- */
 .vstack{ display:flex; flex-direction:column; gap:var(--gap-s); }
@@ -399,8 +415,8 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
 }
 .modal p{
   text-align: center;
-  line-height:1.45;
-  margin-bottom:var(--gap-m);
+  line-height:1.5;
+  margin-bottom: var(--gap-m);
 }
 .modal .btn-accent{
   display:block;
@@ -653,4 +669,41 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
 .btn-row>.btn-accent,
 .btn-row>.btn-grey{
   min-width:140px;          /* одинаковая ширина */
+}
+
+.deadline-card {
+  cursor: pointer;
+}
+
+.deadlines-modal-content h4 {
+  margin-top: var(--gap-s);
+  margin-bottom: var(--gap-s);
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+.deadlines-modal-content hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: var(--gap-m) 0;
+}
+.deadline-item {
+  display: flex;
+  gap: var(--gap-s);
+  padding: 8px 4px;
+  border-radius: 6px;
+}
+.deadline-item:hover {
+  background: #f1f5f9;
+}
+html[data-theme='dark'] .deadline-item:hover {
+  background: #333;
+}
+.deadline-date {
+  font-weight: 600;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.modal .btn-accent{
+  min-width:120px;
 }

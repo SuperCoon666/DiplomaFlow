@@ -13,13 +13,53 @@ export function setupMockServer() {
   window._users ||= [];
 
   /* Хранилище уведомлений в RAM */
-  const LS_KEY = 'mock_notifs';
-  window._notifications = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+  const LS_NOTIFS_KEY = 'mock_notifs';
+  window._notifications = JSON.parse(localStorage.getItem(LS_NOTIFS_KEY) || '{}');
   const saveNotifs = () =>
-    localStorage.setItem(LS_KEY, JSON.stringify(window._notifications));
+    localStorage.setItem(LS_NOTIFS_KEY, JSON.stringify(window._notifications));
+
+  /* Хранилище дедлайнов в RAM */
+  const LS_DEADLINES_KEY = 'mock_deadlines';
+  window._deadlines = JSON.parse(localStorage.getItem(LS_DEADLINES_KEY) || '{}');
+  const saveDeadlines = () =>
+    localStorage.setItem(LS_DEADLINES_KEY, JSON.stringify(window._deadlines));
 
   /* Хранилище студентов в RAM */
   window._students ||= {};
+
+  function generateDeadlines(u) {
+    if (window._deadlines[u.id]) return;
+
+    const samples = [
+      'Сдача отчета по проектной практике',
+      'Выбор темы технологической практики',
+      'Предзащита преддипломной практики',
+      'Сдача итогового отчета по ПП',
+      'Утверждение плана работы',
+      'Консультация по первой главе',
+      'Сдача первой главы на проверку',
+      'Загрузка финальной версии работы'
+    ];
+    
+    const randomDate = (start, end) => {
+      const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+      return date.toISOString().split('T')[0];
+    };
+    
+    const now = new Date();
+    const generated = [];
+    const usedTitles = new Set();
+
+    while(generated.length < 5 && usedTitles.size < samples.length) {
+      let title = samples[Math.floor(Math.random() * samples.length)];
+      if (usedTitles.has(title)) continue;
+      usedTitles.add(title);
+      const date = randomDate(new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000), new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000));
+      generated.push({ title, date });
+    }
+    window._deadlines[u.id] = generated;
+    saveDeadlines();
+  }
 
   function generateNotifications(u){
     if (window._notifications[u.id]) return;
@@ -79,16 +119,25 @@ export function setupMockServer() {
       await wait(400);
       const { email, password, role = 'STUDENT' } = await read(opts.body);
       const userRole = role.toUpperCase();
+      const userId = Date.now();
       const user = {
-        id          : Date.now(),
+        id          : userId,
         email,
         name        : email.split('@')[0] || 'demo',
         role        : userRole,
         groupName   : userRole==='STUDENT' ? 'Б22-05' : '',
-        supervisorId: userRole==='STUDENT' ? 100 : null
+        supervisorId: userRole==='STUDENT' ? 100 : null,
+        progress    : userRole==='STUDENT' ? { project: 45, tech: 20, pre: 5 } : null,
+        deadlines   : null
       };
+      
       window._users.push(user);
       generateNotifications(user);
+      if (userRole === 'STUDENT') {
+        generateDeadlines(user);
+        user.deadlines = window._deadlines[user.id];
+      }
+
       const token = `mock.${user.role}.${user.id}`;
       document.cookie = `jwt=${token}; path=/; samesite=lax`;
 
