@@ -16,44 +16,46 @@ export default async function showDashboardTeacher() {
   // разметка
   document.querySelector('#app').innerHTML = /*html*/`
     <div class="container">
-      <section class="teacher-grid">
-        <article class="card students-card">
-          <h3>Студенты</h3>
-          <div class="teacher-stu-list">
-            ${students.map(s => `
-              <button class="stu-row" data-id="${s.id}">
-                <span>${s.name}</span><span>${s.group}</span>
-              </button>`).join('')}
-          </div>
-        </article>
+      <div class="teacher-dashboard-content">
+        <section class="teacher-grid">
+          <article class="card students-card">
+            <h3>Студенты</h3>
+            <div class="teacher-stu-list">
+              ${students.map(s => `
+                <button class="stu-row" data-id="${s.id}">
+                  <span>${s.name}</span><span>${s.group}</span>
+                </button>`).join('')}
+            </div>
+          </article>
 
-        <article class="card notes-card">
-          <h3>Уведомления</h3>
-          <div class="notifications-list">
-            ${notes.map(n => `
-              <button class="${n.status ? 'btn-grey' : 'btn-accent'}"
-                      data-id="${n.id}">
-                ${n.message}
+          <article class="card notes-card">
+            <h3>Уведомления</h3>
+            <div class="notifications-list">
+              ${notes.map(n => `
+                <button class="${n.status ? 'btn-grey' : 'btn-accent'}"
+                        data-id="${n.id}">
+                  ${n.message}
+                </button>`).join('')}
+            </div>
+          </article>
+        </section>
+        <article class="card review-card">
+          <h3>Работы на проверку</h3>
+          <div class="review-list">
+            <div class="review-header">
+              <div>ФИО</div>
+              <div>Группа</div>
+              <div>Практика</div>
+            </div>
+            ${reviews.map(r => `
+              <button class="review-row" data-type="${r.type}">
+                <div>${r.name}</div>
+                <div>${r.group}</div>
+                <div>${r.practice}</div>
               </button>`).join('')}
           </div>
         </article>
-      </section>
-      <article class="card review-card">
-        <h3>Работы на проверку</h3>
-        <div class="review-list">
-          <div class="review-header">
-            <div>ФИО</div>
-            <div>Группа</div>
-            <div>Практика</div>
-          </div>
-          ${reviews.map(r => `
-            <button class="review-row" data-type="${r.type}">
-              <div>${r.name}</div>
-              <div>${r.group}</div>
-              <div>${r.practice}</div>
-            </button>`).join('')}
-        </div>
-      </article>
+      </div>
     </div>`;
 
   // обработка клика по уведомлению

@@ -42,9 +42,7 @@ body{
 }
 
 .container:has(.dashboard-grid) {
-  min-height: 100vh;
-  padding-bottom: 0;
-  padding-top: calc(var(--gap-l) + 56px);
+  /* был отступ сверху, но он мешал body сжаться по высоте */
 }
 
 .container:has(.editor-layout) {
@@ -169,7 +167,13 @@ a{ text-decoration:none; color:inherit; font-weight:500; }
   display:grid;
   gap:var(--gap-l);
   grid-template-columns:repeat(auto-fill,minmax(20rem,1fr));
+  padding-top: calc(var(--gap-m) + 20px);
 }
+
+.teacher-dashboard-content {
+  padding-top: calc(var(--gap-m) + 20px);
+}
+
 /* ≥1024 px — «Сроки» во втором ряду, 3-й столбец */
 @media(min-width:1024px){
   .deadline-card{ grid-column:3; }
