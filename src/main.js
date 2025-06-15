@@ -37,12 +37,14 @@ function renderControlPanel() {
   document.body.append(panel);
 
   function updatePanel(){
-    const isLogin = location.pathname === '/login';
-    document.getElementById('back-btn' ).style.display = isLogin ? 'none' : 'block';
-    document.getElementById('logout-btn').style.display = isLogin ? 'none' : 'inline-block';
+    const path = window.location.pathname;
+    const isLoginOrDashboard = (path === '/login' || path === '/');
+    document.getElementById('back-btn' ).style.display = isLoginOrDashboard ? 'none' : 'block';
+    document.getElementById('logout-btn').style.display = path === '/login' ? 'none' : 'inline-block';
   }
   updatePanel();
   window.addEventListener('popstate', updatePanel);
+  window.addEventListener('va-update-panel', updatePanel);
   onLangChange(updatePanel);
 
   /* язык */

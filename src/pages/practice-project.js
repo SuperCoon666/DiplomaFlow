@@ -48,7 +48,8 @@ function showEditor(type, title) {
     window.tinymce.init({
       selector: '#editor',
       language: 'ru',
-      height: 500,
+      height: '100%',
+      resize: 'vertical',
       menubar: true,
       plugins: [
         'lists', 'link', 'code', 'fullscreen', 'table', 'wordcount'
