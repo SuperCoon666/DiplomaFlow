@@ -22,7 +22,7 @@ export default async function showDashboard() {
   const nearestDeadline = upcomingDeadlines[0];
 
   document.querySelector('#app').innerHTML = /*html*/`
-    <main class="container">
+    <main class="container" style="padding-top: var(--gap-l);">
       <section class="dashboard-grid">
 
         <!-- Трекер -------------------------------------------------------------- -->
